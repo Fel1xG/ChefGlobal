@@ -8,7 +8,9 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -66,6 +68,7 @@ public class Inicio1 extends AppCompatActivity {
                         getSupportFragmentManager().beginTransaction().replace(R.id.contenedor,c
                         ).commit();
                         break;
+
                 }
 
 
@@ -90,6 +93,21 @@ public class Inicio1 extends AppCompatActivity {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 //recuperar la opcion del menu
+                int id = item.getItemId();
+                if(id==R.id.mChat){
+                    Toast.makeText(Inicio1.this, "JAAAAAAAAAA", Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+                Toast.makeText(getApplicationContext(), "alooo", Toast.LENGTH_SHORT).show();
+                if(id==R.id.cerrarsesion){
+                    SharedPreferences datos = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                    SharedPreferences.Editor editor = datos.edit();
+                    editor.putString("correo","");
+                    editor.apply();
+                    Toast.makeText(Inicio1.this, "CHAO", Toast.LENGTH_SHORT).show();
+                    System.out.println("CHAO");
+                    finish();
+                }
                 return false;
             }
         });

@@ -4,9 +4,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -28,6 +33,17 @@ public class MainActivity extends AppCompatActivity {
         String contrasenia = campo2.getText().toString();
 
         if (correo.equals("felix@gmail.com") && contrasenia.equals("123")) {
+
+            CheckBox cbRecuerdame = findViewById(R.id.cbRecuerdame);
+            boolean chequeado = cbRecuerdame.isChecked();
+            if(chequeado==true){
+                SharedPreferences datos = PreferenceManager.getDefaultSharedPreferences(this);
+                SharedPreferences.Editor editor = datos.edit();
+                editor.putString("correo", correo);
+                editor.apply();
+            }
+
+
             Intent i = new Intent(this, Inicio1.class);
             startActivity(i);
         } else {
@@ -38,5 +54,18 @@ public class MainActivity extends AppCompatActivity {
     public void register(View v) {
         Intent i = new Intent(this, Registro.class);
         startActivity(i);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        SharedPreferences datos = PreferenceManager.getDefaultSharedPreferences(this);
+        System.out.println("HOLAAA");
+        String correo = datos.getString("correo", "");
+        Toast.makeText(this, "Correo:"+correo, Toast.LENGTH_SHORT).show();
+        if(!correo.equals(""));
+        Intent i = new Intent(this, Inicio1.class);
+        //startActivity(i);
+
     }
 }
