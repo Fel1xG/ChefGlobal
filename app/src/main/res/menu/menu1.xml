@@ -8,26 +8,31 @@
         android:icon="@drawable/baseline_chat_24"
         android:title="Chat" />
     <item
+        android:id="@+id/notificacion"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:icon="@drawable/baseline_circle_notifications_24"
         android:title="Notificaciones" />
     <item
+        android:id="@+id/recetas"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:icon="@drawable/baseline_food_bank_24"
         android:title="Tus recetas" />
     <item
+        android:id="@+id/invitaAmigos"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:icon="@drawable/baseline_mobile_screen_share_24"
         android:title="Invita amigos" />
     <item
+        android:id="@+id/ajustes"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:icon="@drawable/baseline_settings_suggest_24"
         android:title="Ajustes" />
     <item
+        android:id="@+id/ayuda"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:icon="@drawable/baseline_live_help_24"

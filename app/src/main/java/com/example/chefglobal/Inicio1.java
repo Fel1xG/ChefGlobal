@@ -7,7 +7,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -92,23 +96,62 @@ public class Inicio1 extends AppCompatActivity {
         nav.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                //recuperar la opcion del menu
                 int id = item.getItemId();
-                if(id==R.id.mChat){
-                    Toast.makeText(Inicio1.this, "JAAAAAAAAAA", Toast.LENGTH_SHORT).show();
-                    finish();
-                }
-                Toast.makeText(getApplicationContext(), "alooo", Toast.LENGTH_SHORT).show();
-                if(id==R.id.cerrarsesion){
-                    SharedPreferences datos = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-                    SharedPreferences.Editor editor = datos.edit();
-                    editor.putString("correo","");
+
+                if (id == R.id.mChat) {
+                    // Cargar el fragmento de chat
+                    Chat c = new Chat();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.contenedor, c).commit();
+                } else if (id == R.id.recetas) {
+                    // Cargar el fragmento de recetas
+                    Recetas r = new Recetas();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.contenedor, r).commit();
+                } else if (id == R.id.notificacion) {
+                    // Iniciar la actividad de notificaciones
+                    startActivity(new Intent(Inicio1.this, Notificaciones.class));
+                } else if (id == R.id. invitaAmigos) {
+                    // Implementar lógica para compartir la app
+                    // Puedes usar un Intent para compartir el enlace de descarga de la app
+                } else if (id == R.id.ajustes) {
+                    // Iniciar la actividad de ajustes
+                    startActivity(new Intent(Inicio1.this, Ajustes.class));
+                } else if (id == R.id.ayuda) {
+                    // Iniciar la actividad de ayuda
+                    startActivity(new Intent(Inicio1.this, Ayuda.class));
+                } else if (id == R.id.cerrarsesion) {
+                    // Nombre de la preferencia personalizada (debe coincidir con el que usaste en otros métodos)
+                    String preferenciaNombre = "MisPreferencias";
+
+                    // Obtener el objeto SharedPreferences personalizado
+                    SharedPreferences misPreferencias = getSharedPreferences(preferenciaNombre, MODE_PRIVATE);
+
+                    // Obtener un editor para modificar las preferencias
+                    SharedPreferences.Editor editor = misPreferencias.edit();
+
+                    // Eliminar la clave "correo" de las preferencias compartidas
+                    editor.remove("correo");
                     editor.apply();
-                    Toast.makeText(Inicio1.this, "CHAO", Toast.LENGTH_SHORT).show();
-                    System.out.println("CHAO");
+
+                    // Finalizar la actividad actual
                     finish();
                 }
-                return false;
+
+                // Cerrar el cajón de navegación después de la selección
+                DrawerLayout dl = findViewById(R.id.inicio);
+                dl.closeDrawer(GravityCompat.START);
+                return true;
+            }
+            // Método para cargar un fragmento en el contenedor
+            private void openFragment(Fragment fragment) {
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                FragmentTransaction transaction = fragmentManager.beginTransaction();
+                transaction.replace(R.id.frame_container, fragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
+
+                // Cerrar el cajón de navegación después de la selección
+                DrawerLayout dl = findViewById(R.id.inicio);
+                dl.closeDrawer(GravityCompat.START);
             }
         });
         DrawerLayout dl = (DrawerLayout) findViewById(R.id.inicio);

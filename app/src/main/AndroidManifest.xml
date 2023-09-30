@@ -13,6 +13,15 @@
         android:theme="@style/Theme.ChefGlobal"
         tools:targetApi="31">
         <activity
+            android:name=".Ayuda"
+            android:exported="false" />
+        <activity
+            android:name=".Ajustes"
+            android:exported="false" />
+        <activity
+            android:name=".Notificaciones"
+            android:exported="false" />
+        <activity
             android:name=".Confirmacion1"
             android:exported="false" />
         <activity

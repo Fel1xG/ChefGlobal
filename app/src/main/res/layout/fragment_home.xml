@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/frameHome"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Home">
@@ -28,8 +29,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Feliciano001"
-                    android:textStyle="bold"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -61,8 +62,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginTop="8dp">
+                    android:layout_marginTop="8dp"
+                    android:orientation="horizontal">
 
                     <!-- Botón "Me gusta" -->
                     <ImageView
@@ -110,8 +111,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Carlo1_pro"
-                    android:textStyle="bold"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -143,8 +144,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginTop="8dp">
+                    android:layout_marginTop="8dp"
+                    android:orientation="horizontal">
 
                     <!-- Botón "Me gusta" -->
                     <ImageView
@@ -190,8 +191,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="peiroIs3"
-                    android:textStyle="bold"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -223,18 +224,18 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginTop="8dp">
+                    android:layout_marginTop="8dp"
+                    android:orientation="horizontal">
 
                     <!-- Botón "Me gusta" -->
                     <ImageView
                         android:layout_width="32dp"
                         android:layout_height="32dp"
-                        android:src="@drawable/heart_solid"
                         android:layout_marginEnd="16dp"
                         android:clickable="true"
+                        android:contentDescription="Me gusta"
                         android:focusable="true"
-                        android:contentDescription="Me gusta" />
+                        android:src="@drawable/heart_solid" />
 
                     <!-- Botón "Compartir" -->
                     <ImageView
@@ -250,10 +251,10 @@
                     <ImageView
                         android:layout_width="32dp"
                         android:layout_height="32dp"
-                        android:src="@drawable/bookmark_solid"
                         android:clickable="true"
+                        android:contentDescription="Guardar"
                         android:focusable="true"
-                        android:contentDescription="Guardar" />
+                        android:src="@drawable/bookmark_solid" />
 
                 </LinearLayout>
             </LinearLayout>
@@ -270,8 +271,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Luciano09"
-                    android:textStyle="bold"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -303,18 +304,18 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginTop="8dp">
+                    android:layout_marginTop="8dp"
+                    android:orientation="horizontal">
 
                     <!-- Botón "Me gusta" -->
                     <ImageView
                         android:layout_width="32dp"
                         android:layout_height="32dp"
-                        android:src="@drawable/heart_solid"
                         android:layout_marginEnd="16dp"
                         android:clickable="true"
+                        android:contentDescription="Me gusta"
                         android:focusable="true"
-                        android:contentDescription="Me gusta" />
+                        android:src="@drawable/heart_solid" />
 
                     <!-- Botón "Compartir" -->
                     <ImageView
@@ -330,10 +331,10 @@
                     <ImageView
                         android:layout_width="32dp"
                         android:layout_height="32dp"
-                        android:src="@drawable/bookmark_solid"
                         android:clickable="true"
+                        android:contentDescription="Guardar"
                         android:focusable="true"
-                        android:contentDescription="Guardar" />
+                        android:src="@drawable/bookmark_solid" />
 
                 </LinearLayout>
             </LinearLayout>
@@ -350,8 +351,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Lar04"
-                    android:textStyle="bold"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -383,18 +384,18 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginTop="8dp">
+                    android:layout_marginTop="8dp"
+                    android:orientation="horizontal">
 
                     <!-- Botón "Me gusta" -->
                     <ImageView
                         android:layout_width="32dp"
                         android:layout_height="32dp"
-                        android:src="@drawable/heart_solid"
                         android:layout_marginEnd="16dp"
                         android:clickable="true"
+                        android:contentDescription="Me gusta"
                         android:focusable="true"
-                        android:contentDescription="Me gusta" />
+                        android:src="@drawable/heart_solid" />
 
                     <!-- Botón "Compartir" -->
                     <ImageView
@@ -410,10 +411,10 @@
                     <ImageView
                         android:layout_width="32dp"
                         android:layout_height="32dp"
-                        android:src="@drawable/bookmark_solid"
                         android:clickable="true"
+                        android:contentDescription="Guardar"
                         android:focusable="true"
-                        android:contentDescription="Guardar" />
+                        android:src="@drawable/bookmark_solid" />
 
                 </LinearLayout>
             </LinearLayout>

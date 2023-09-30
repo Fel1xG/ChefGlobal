@@ -36,10 +36,19 @@ public class MainActivity extends AppCompatActivity {
 
             CheckBox cbRecuerdame = findViewById(R.id.cbRecuerdame);
             boolean chequeado = cbRecuerdame.isChecked();
-            if(chequeado==true){
-                SharedPreferences datos = PreferenceManager.getDefaultSharedPreferences(this);
-                SharedPreferences.Editor editor = datos.edit();
+
+            if (chequeado) {
+                // Nombre de la preferencia personalizada
+                String preferenciaNombre = "MisPreferencias";
+
+                // Obtener el objeto SharedPreferences personalizado
+                SharedPreferences misPreferencias = getSharedPreferences(preferenciaNombre, MODE_PRIVATE);
+
+                // Editar el objeto SharedPreferences
+                SharedPreferences.Editor editor = misPreferencias.edit();
                 editor.putString("correo", correo);
+
+                // Aplicar los cambios
                 editor.apply();
             }
 
@@ -56,16 +65,23 @@ public class MainActivity extends AppCompatActivity {
         startActivity(i);
     }
 
+
     @Override
     protected void onResume() {
         super.onResume();
-        SharedPreferences datos = PreferenceManager.getDefaultSharedPreferences(this);
-        System.out.println("HOLAAA");
-        String correo = datos.getString("correo", "");
-        Toast.makeText(this, "Correo:"+correo, Toast.LENGTH_SHORT).show();
-        if(!correo.equals(""));
-        Intent i = new Intent(this, Inicio1.class);
-        //startActivity(i);
 
+        // Nombre de la preferencia personalizada (debe coincidir con el que usaste en onCreate)
+        String preferenciaNombre = "MisPreferencias";
+
+        // Obtener el objeto SharedPreferences personalizado
+        SharedPreferences misPreferencias = getSharedPreferences(preferenciaNombre, MODE_PRIVATE);
+
+        // Recuperar el valor de "correo" desde las preferencias compartidas
+        String correo = misPreferencias.getString("correo", "");
+
+        if (!correo.equals("")) {
+            Intent i = new Intent(this, Inicio1.class);
+            startActivity(i);
+        }
     }
 }

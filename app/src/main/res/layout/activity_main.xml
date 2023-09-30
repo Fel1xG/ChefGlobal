@@ -11,8 +11,8 @@
         android:id="@+id/imageView3"
         android:layout_width="488dp"
         android:layout_height="344dp"
-        android:layout_marginBottom="12dp"
-        app:layout_constraintBottom_toTopOf="@+id/correo"
+        android:layout_marginBottom="27dp"
+        app:layout_constraintBottom_toBottomOf="@+id/correo"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.505"
         app:layout_constraintStart_toStartOf="parent"
@@ -20,24 +20,23 @@
 
     <TextView
         android:id="@+id/textView"
-        android:layout_width="243dp"
-        android:layout_height="42dp"
-        android:layout_marginTop="189dp"
-        android:layout_marginBottom="55dp"
+        android:layout_width="219dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="167dp"
+        android:layout_marginBottom="29dp"
         android:text="Inicio de Sesión"
         android:textColor="#000000"
         android:textSize="30sp"
         app:layout_constraintBottom_toTopOf="@+id/correo"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.603"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/correo"
-        android:layout_width="368dp"
-        android:layout_height="53dp"
-        android:layout_marginStart="13dp"
-        android:layout_marginEnd="13dp"
+        android:layout_width="298dp"
+        android:layout_height="0dp"
         android:layout_marginBottom="39dp"
         android:ems="10"
         android:hint="Correo Electrónico"
@@ -49,86 +48,77 @@
 
     <EditText
         android:id="@+id/contrasenia"
-        android:layout_width="370dp"
-        android:layout_height="52dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginBottom="52dp"
+        android:layout_width="300dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="21dp"
         android:ems="10"
         android:hint="Contraseña"
         android:inputType="textPassword"
-        app:layout_constraintBottom_toTopOf="@+id/login"
+        app:layout_constraintBottom_toTopOf="@+id/cbRecuerdame"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/correo" />
 
     <Button
         android:id="@+id/login"
-        android:layout_width="284dp"
-        android:layout_height="54dp"
-        android:layout_marginStart="59dp"
-        android:layout_marginEnd="59dp"
-        android:layout_marginBottom="78dp"
+        android:layout_width="255dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="75dp"
         android:onClick="login"
         android:text="Iniciar Sesión"
-        app:layout_constraintBottom_toTopOf="@+id/textView2"
+        app:layout_constraintBottom_toTopOf="@+id/registro1"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/contrasenia" />
+        app:layout_constraintTop_toBottomOf="@+id/cbRecuerdame" />
 
     <TextView
         android:id="@+id/textView2"
-        android:layout_width="204dp"
-        android:layout_height="31dp"
-        android:layout_marginBottom="17dp"
+        android:layout_width="198dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="42dp"
+        android:layout_marginBottom="47dp"
         android:clickable="true"
         android:onClick="register"
         android:text="¿No tienes cuenta? Registrate"
         android:textColor="#000000"
-        app:layout_constraintBottom_toTopOf="@+id/registro1"
+        app:layout_constraintBottom_toBottomOf="@+id/registro1"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.574"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/login" />
+        app:layout_constraintTop_toBottomOf="@+id/login"
+        app:layout_constraintVertical_bias="0.4" />
 
     <Button
         android:id="@+id/registro1"
-        android:layout_width="306dp"
-        android:layout_height="56dp"
-        android:layout_marginStart="48dp"
-        android:layout_marginEnd="48dp"
-        android:layout_marginBottom="19dp"
+        android:layout_width="255dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="13dp"
         android:onClick="register"
         android:text="Registrate"
         app:layout_constraintBottom_toTopOf="@+id/textView3"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.555"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView2" />
+        app:layout_constraintTop_toBottomOf="@+id/login" />
 
     <TextView
         android:id="@+id/textView3"
-        android:layout_width="378dp"
+        android:layout_width="329dp"
         android:layout_height="0dp"
-        android:layout_marginStart="7dp"
-        android:layout_marginEnd="7dp"
-        android:layout_marginBottom="39dp"
+        android:layout_marginBottom="46dp"
         android:text="Al continuar, también aceptas los Términos de servicios y política de privacidad "
         android:textColor="#86000000"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cbRecuerdame" />
+        app:layout_constraintTop_toBottomOf="@+id/registro1" />
 
     <CheckBox
         android:id="@+id/cbRecuerdame"
-        android:layout_width="105dp"
-        android:layout_height="49dp"
-        android:layout_marginTop="420dp"
-        android:layout_marginBottom="274dp"
-        android:text="Recordar "
-        app:layout_constraintBottom_toTopOf="@+id/textView3"
-        app:layout_constraintEnd_toEndOf="@+id/login"
-        app:layout_constraintStart_toEndOf="@+id/login"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_width="185dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="22dp"
+        android:text="Recordar Cuenta"
+        app:layout_constraintBottom_toTopOf="@+id/login"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/contrasenia" />
 </androidx.constraintlayout.widget.ConstraintLayout>
