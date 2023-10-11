@@ -24,6 +24,7 @@ import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class Inicio1 extends AppCompatActivity {
 
@@ -119,21 +120,14 @@ public class Inicio1 extends AppCompatActivity {
                     // Iniciar la actividad de ayuda
                     startActivity(new Intent(Inicio1.this, Ayuda.class));
                 } else if (id == R.id.cerrarsesion) {
-                    // Nombre de la preferencia personalizada (debe coincidir con el que usaste en otros métodos)
+                    FirebaseAuth.getInstance().signOut(); // Cierra la sesión de Firebase
+                    // También puedes eliminar la información de preferencias compartidas si lo deseas
                     String preferenciaNombre = "MisPreferencias";
-
-                    // Obtener el objeto SharedPreferences personalizado
                     SharedPreferences misPreferencias = getSharedPreferences(preferenciaNombre, MODE_PRIVATE);
-
-                    // Obtener un editor para modificar las preferencias
                     SharedPreferences.Editor editor = misPreferencias.edit();
-
-                    // Eliminar la clave "correo" de las preferencias compartidas
                     editor.remove("correo");
                     editor.apply();
-
-                    // Finalizar la actividad actual
-                    finish();
+                    finish(); // Finaliza la actividad actual
                 }
 
                 // Cerrar el cajón de navegación después de la selección

@@ -64,7 +64,7 @@
         android:layout_width="255dp"
         android:layout_height="0dp"
         android:layout_marginBottom="75dp"
-        android:onClick="login"
+        android:onClick="iniciarSesion"
         android:text="Iniciar Sesión"
         app:layout_constraintBottom_toTopOf="@+id/registro1"
         app:layout_constraintEnd_toEndOf="parent"
@@ -114,8 +114,8 @@
 
     <CheckBox
         android:id="@+id/cbRecuerdame"
-        android:layout_width="185dp"
-        android:layout_height="0dp"
+        android:layout_width="149dp"
+        android:layout_height="60dp"
         android:layout_marginBottom="22dp"
         android:text="Recordar Cuenta"
         app:layout_constraintBottom_toTopOf="@+id/login"

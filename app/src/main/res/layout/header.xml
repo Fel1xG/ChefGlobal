@@ -44,7 +44,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textView6" />
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/ivFoto"
         android:layout_width="178dp"
         android:layout_height="195dp"
         android:layout_marginStart="16dp"
