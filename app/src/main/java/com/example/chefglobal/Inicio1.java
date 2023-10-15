@@ -36,10 +36,6 @@ public class Inicio1 extends AppCompatActivity {
         Toolbar tb = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(tb);
 
-
-
-
-
         TabLayout tl = (TabLayout) findViewById(R.id.tablayout);
         tl.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -70,8 +66,7 @@ public class Inicio1 extends AppCompatActivity {
                     case 4:
                         //Llamar al fragmento chat
                         Chat c = new Chat();
-                        getSupportFragmentManager().beginTransaction().replace(R.id.contenedor,c
-                        ).commit();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.contenedor,c).commit();
                         break;
 
                 }

@@ -5,8 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -16,10 +14,13 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class Registro extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
+    private DatabaseReference databaseReference;
 
     private EditText correo2;
     private EditText contrasenia2;
@@ -31,6 +32,7 @@ public class Registro extends AppCompatActivity {
         setContentView(R.layout.activity_registro);
 
         mAuth = FirebaseAuth.getInstance();
+        databaseReference = FirebaseDatabase.getInstance().getReference();
 
         correo2 = findViewById(R.id.correo2);
         contrasenia2 = findViewById(R.id.contrasenia2);
@@ -39,38 +41,52 @@ public class Registro extends AppCompatActivity {
 
     public void onStart() {
         super.onStart();
-        // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        //updateUI(currentUser)
     }
 
-    public void registrarUsuario(View view){
+    public void registrarUsuario(View view) {
+        final String email = correo2.getText().toString();
+        final String password = contrasenia2.getText().toString();
+        final String idPersonalizado = obtenerIdPersonalizado(email);
 
-        if (contrasenia2.getText().toString().equals(contrasenia3.getText().toString())){
-
-            mAuth.createUserWithEmailAndPassword(correo2.getText().toString(), contrasenia2.getText().toString())
+        if (password.equals(contrasenia3.getText().toString())) {
+            mAuth.createUserWithEmailAndPassword(email, password)
                     .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
-                                // Sign in success, update UI with the signed-in user's information
-                                Toast.makeText(getApplicationContext(), "Usuario Creado", Toast.LENGTH_SHORT).show();
                                 FirebaseUser user = mAuth.getCurrentUser();
+
+                                // Guardar el correo y el ID personalizado en la base de datos Realtime Database
+                                guardarRegistroEnRealtimeDatabase(user.getUid(), email, idPersonalizado);
+
+                                Toast.makeText(getApplicationContext(), "Usuario Creado", Toast.LENGTH_SHORT).show();
                                 Intent i = new Intent(getApplicationContext(), Confirmacion1.class);
                                 startActivity(i);
                             } else {
-                                // If sign in fails, display a message to the user.
                                 Toast.makeText(getApplicationContext(), "Authentication failed", Toast.LENGTH_SHORT).show();
-                                //updateUI(null);
                             }
                         }
                     });
-        }else{
+        } else {
             Toast.makeText(this, "Las contraseñas no coinciden", Toast.LENGTH_SHORT).show();
         }
-
-
     }
+
+    private void guardarRegistroEnRealtimeDatabase(String userId, String correo, String idPersonalizado) {
+        DatabaseReference userRef = databaseReference.child("Registros").child(userId);
+        userRef.child("correo").setValue(correo);
+        userRef.child("id_personalizado").setValue(idPersonalizado);
+    }
+
+    private String obtenerIdPersonalizado(String correo) {
+        // Aquí puedes implementar la lógica para obtener un ID personalizado, por ejemplo, tomar las primeras cinco letras del correo.
+        if (correo.length() >= 7) {
+            return correo.substring(0, 7);
+        } else {
+            return correo;
+        }
+    }
+
 
 
     public void register2(View v){

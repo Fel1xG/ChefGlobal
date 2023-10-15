@@ -45,14 +45,10 @@
 
     <ImageView
         android:id="@+id/ivFoto"
-        android:layout_width="178dp"
+        android:layout_width="163dp"
         android:layout_height="195dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/cristiano_ronaldo_y_sus_cortes_de_pelo_moda_futbol_2016_gafas_1200x1193" />
+        app:srcCompat="@drawable/imagen_perfil_sin_foto"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="16dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

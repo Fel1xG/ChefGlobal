@@ -1,64 +1,163 @@
 package com.example.chefglobal;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
+import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.Toast;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link Agregar#newInstance} factory method to
- * create an instance of this fragment.
- */
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
+import java.io.IOException;
+import java.util.UUID;
+
 public class Agregar extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private static final int GALLERY_REQUEST = 1889;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private Button seleccionarFotoButton;
+    private ImageView imagenPreview;
+    private EditText textoPublicacion;
+    private Button publicarButton;
 
-    public Agregar() {
-        // Required empty public constructor
-    }
+    private Uri imageUri;
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment Agregar.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static Agregar newInstance(String param1, String param2) {
-        Agregar fragment = new Agregar();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_agregar, container, false);
+
+        seleccionarFotoButton = view.findViewById(R.id.seleccionar_foto_button);
+        imagenPreview = view.findViewById(R.id.imagen_preview);
+        textoPublicacion = view.findViewById(R.id.texto_publicacion);
+        publicarButton = view.findViewById(R.id.publicar_button);
+
+        seleccionarFotoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Abre la galería para seleccionar una foto
+                Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(galleryIntent, GALLERY_REQUEST);
+            }
+        });
+
+        publicarButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Obtén el texto de la publicación y la imagen (si se seleccionó una)
+                String texto = textoPublicacion.getText().toString();
+
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                if (user != null) {
+                    // Sube la imagen al Firebase Storage
+                    if (imageUri != null) {
+                        subirImagenAFirebaseStorage(texto);
+                    } else {
+                        // No hay imagen seleccionada, muestra un mensaje de error
+                        Toast.makeText(getActivity(), "Debes seleccionar una imagen", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    // El usuario no ha iniciado sesión; debes manejar este caso según tus requerimientos
+                    Toast.makeText(getActivity(), "Debes iniciar sesión para publicar", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        return view;
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == GALLERY_REQUEST) {
+            if (resultCode == Activity.RESULT_OK && data != null) {
+                // Recibe la imagen seleccionada desde la galería
+                imageUri = data.getData();
+                try {
+                    Bitmap photo = MediaStore.Images.Media.getBitmap(
+                            getActivity().getContentResolver(),
+                            imageUri
+                    );
+                    imagenPreview.setImageBitmap(photo);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_agregar, container, false);
+    private void subirImagenAFirebaseStorage(final String texto) {
+        final String nombreImagen = UUID.randomUUID().toString(); // Genera un nombre único para la imagen
+
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReference().child("publicaciones/" + nombreImagen);
+
+        storageRef.putFile(imageUri) // Utiliza putFile en lugar de putBytes para manejar cualquier formato de imagen
+                .addOnSuccessListener(taskSnapshot -> {
+                    // Imagen subida exitosamente
+                    storageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                        // URL de la imagen
+                        String imageUrl = uri.toString();
+                        guardarPublicacion(texto, imageUrl);
+                    });
+                })
+                .addOnFailureListener(e -> {
+                    // Maneja errores si la subida de la imagen falla
+                    Log.e("MiApp", "Error al subir la imagen: " + e.getMessage());
+                    Toast.makeText(getActivity(), "Error al subir la imagen", Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    private void guardarPublicacion(String texto, String imageUrl) {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            String userId = user.getUid();
+
+            // Crear una instancia de Firebase Firestore
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+            // Crear un documento para la nueva publicación
+            DocumentReference nuevaPublicacion = db.collection("publicaciones").document();
+
+            // Crear un objeto Publicacion con los datos
+            Publicacion publicacion;
+            if (imageUrl != null) {
+                publicacion = new Publicacion(userId, texto, imageUrl);
+            } else {
+                publicacion = new Publicacion(userId, texto, ""); // Establece una URL vacía o un valor predeterminado si no hay URL de imagen
+            }
+
+            // Guardar la publicación en Firestore
+            nuevaPublicacion.set(publicacion);
+
+            Toast.makeText(getActivity(), "Publicación guardada exitosamente", Toast.LENGTH_SHORT).show();
+
+            // Limpia los campos después de la publicación
+            textoPublicacion.setText("");
+            imagenPreview.setImageResource(0);
+        }
     }
 }
+

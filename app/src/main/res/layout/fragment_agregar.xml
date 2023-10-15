@@ -1,15 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/frameAgregar"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Agregar">
+    android:padding="16dp"
+    tools:context=".AgregarFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <Button
+        android:id="@+id/tomar_foto_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tomar Foto"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="16dp" />
+
+    <Button
+        android:id="@+id/seleccionar_foto_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Seleccionar Foto"
+        android:layout_below="@id/tomar_foto_button"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="16dp" />
+
+    <ImageView
+        android:id="@+id/imagen_preview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="hola toi en agregar " />
+        android:layout_height="200dp"
+        android:layout_below="@id/seleccionar_foto_button"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:scaleType="centerCrop"
+        android:background="@android:color/darker_gray"
+        android:contentDescription="Imagen Preview" />
 
-</FrameLayout>
+    <EditText
+        android:id="@+id/texto_publicacion"
+        android:layout_width="369dp"
+        android:layout_height="66dp"
+        android:layout_below="@id/imagen_preview"
+        android:layout_marginTop="16dp"
+        android:gravity="start|top"
+        android:hint="Escribe tu publicación aquí"
+        android:inputType="textMultiLine"
+        android:minLines="5"
+        android:padding="8dp" />
+
+    <Button
+        android:id="@+id/publicar_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Publicar"
+        android:layout_below="@id/texto_publicacion"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp" />
+
+</RelativeLayout>

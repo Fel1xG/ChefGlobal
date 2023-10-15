@@ -23,6 +23,8 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText correo;
     private EditText contrasenia;
     private FirebaseAuth mAuth;
+    private DatabaseReference databaseReference; // Agrega la referencia a la base de datos Realtime Database
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
         contrasenia = findViewById(R.id.contrasenia);
 
         mAuth = FirebaseAuth.getInstance();
+        databaseReference = FirebaseDatabase.getInstance().getReference(); // Inicializa la referencia a la base de datos
     }
 
     public void onStart() {
@@ -73,6 +77,9 @@ public class MainActivity extends AppCompatActivity {
                                 recordarSesion();
                             }
 
+                            // Guardar un registro en la base de datos Realtime Database
+                            guardarInicioSesionEnRealtimeDatabase(user.getUid(), email);
+
                             // Iniciar la actividad Inicio1
                             irAInicio1();
                         } else {
@@ -96,7 +103,6 @@ public class MainActivity extends AppCompatActivity {
         // Aplicar los cambios
         editor.apply();
     }
-
 
     private void irAInicio1() {
         // Iniciar la actividad Inicio1
@@ -128,4 +134,10 @@ public class MainActivity extends AppCompatActivity {
             irAInicio1();
         }
     }
+
+    private void guardarInicioSesionEnRealtimeDatabase(String userId, String correo) {
+        DatabaseReference userRef = databaseReference.child("inicio_sesion").child(userId);
+        userRef.child("correo").setValue(correo);
+    }
 }
+

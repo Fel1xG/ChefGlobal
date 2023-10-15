@@ -1,10 +1,13 @@
 package com.example.chefglobal;
 
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,10 +27,6 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.widget.ImageView;
-
 
 public class Ajustes extends AppCompatActivity {
     static final int REQUEST_IMAGE_CAPTURE = 1;
@@ -36,10 +35,27 @@ public class Ajustes extends AppCompatActivity {
     private String currentUserUid;
     private FirebaseFirestore db;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_ajustes);
+        setContentView(R.layout.activity_ajustes); // Asegúrate de que tu layout tenga un ImageView con id ivFoto
+
+        // Verifica si el usuario ha iniciado sesión y tiene una foto de perfil
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser != null) {
+            String currentUserUid = currentUser.getUid();
+
+            // Define la referencia a la foto de perfil en Firebase Storage
+            StorageReference fotoRef = FirebaseStorage.getInstance().getReference().child("images/" + "perfil_" + currentUserUid + ".jpg");
+
+            // Carga la foto de perfil en el ImageView
+            ImageView imfoto = findViewById(R.id.ivFoto);
+            Glide.with(this)
+                    .load(fotoRef)
+                    .into(imfoto);
+        }
+
         mStorage = FirebaseStorage.getInstance().getReference();
         imfoto = findViewById(R.id.ivFoto);
 
@@ -48,14 +64,16 @@ public class Ajustes extends AppCompatActivity {
 
         // Inicializa Firebase Authentication
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if (currentUser != null) {
-            currentUserUid = currentUser.getUid();
+        FirebaseUser currentUser1 = mAuth.getCurrentUser();
+        if (currentUser1 != null) {
+            currentUserUid = currentUser1.getUid();
         }
 
         // Carga la foto de perfil del usuario actual si está disponible
         cargarFotoDePerfil();
     }
+
+
 
     public void tomar_foto(View v) {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -94,35 +112,42 @@ public class Ajustes extends AppCompatActivity {
         }
     }
 
+    // Sube una foto de perfil a Firebase Storage
     private void subirImagenAFirebase(Bitmap imageBitmap) {
-        StorageReference fotoRef = mStorage.child("images/foto.jpg");
-        // Generar un arreglo de bytes
+        // Define el tamaño deseado para la imagen (por ejemplo, 500x500 píxeles)
+        int targetWidth = 500;
+        int targetHeight = 500;
+
+        // Redimensiona la imagen al tamaño deseado
+        Bitmap resizedBitmap = Bitmap.createScaledBitmap(imageBitmap, targetWidth, targetHeight, true);
+
+        // Genera un nombre de archivo único para la foto de perfil
+        String fileName = "perfil_" + currentUserUid + ".jpg";
+        StorageReference fotoRef = mStorage.child("images/" + fileName);
+
+        // Convierte la imagen redimensionada a bytes
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        // Convierte el bitmap al formato y calidad que deseas
-        imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        resizedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
         byte[] data1 = baos.toByteArray();
 
-        // Subir a Firebase Storage
+        // Sube la imagen redimensionada con el nombre de archivo único a Firebase Storage
         UploadTask uploadTask = fotoRef.putBytes(data1);
         uploadTask.addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                 if (task.isSuccessful()) {
-                    Toast.makeText(Ajustes.this, "Imagen subida con éxito.", Toast.LENGTH_SHORT).show();
+                    // La imagen se ha subido con éxito.
+                    // Ahora puedes guardar la URL de la imagen en la base de datos (Firestore).
+                    guardarURLImagenEnBaseDeDatos(fotoRef);
                 } else {
-                    Toast.makeText(Ajustes.this, "Error al subir la imagen.", Toast.LENGTH_SHORT).show();
-                    Exception e = task.getException(); // Obtén información sobre el error
-                    if (e != null) {
-                        Log.e("Ajustes", "Error al subir imagen: " + e.getMessage());
-                    }
+                    // Se produjo un error al subir la imagen.
+                    Toast.makeText(Ajustes.this, "Error al subir la imagen. Inténtalo de nuevo.", Toast.LENGTH_SHORT).show();
                 }
             }
         });
-
-        // Guardar la URL de la imagen en la base de datos
-        guardarURLImagenEnBaseDeDatos(fotoRef);
     }
 
+    // Guarda la URL de la imagen de perfil en Firestore
     private void guardarURLImagenEnBaseDeDatos(StorageReference fotoRef) {
         fotoRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
@@ -130,7 +155,7 @@ public class Ajustes extends AppCompatActivity {
                 // URL de la imagen
                 final String imageURL = uri.toString();
 
-                // Guardar la URL en Firestore o Realtime Database (aquí utilizo Firestore)
+                // Guarda la URL en Firestore
                 DocumentReference userRef = db.collection("usuarios").document(currentUserUid);
                 userRef.update("fotoDePerfil", imageURL)
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -148,7 +173,8 @@ public class Ajustes extends AppCompatActivity {
             }
         });
     }
-    // Método para cargar la foto de perfil del usuario actual si está disponible en la base de datos
+
+    // Carga la foto de perfil del usuario al iniciar sesión
     private void cargarFotoDePerfil() {
         if (currentUserUid != null) {
             DocumentReference userRef = db.collection("usuarios").document(currentUserUid);
@@ -158,7 +184,7 @@ public class Ajustes extends AppCompatActivity {
                     if (documentSnapshot.exists()) {
                         String imageURL = documentSnapshot.getString("fotoDePerfil");
                         if (imageURL != null) {
-                            // Cargar la imagen desde la URL en el ImageView
+                            // Carga la imagen desde la URL en el ImageView
                             Glide.with(Ajustes.this)
                                     .load(imageURL)
                                     .into(imfoto);
@@ -169,4 +195,3 @@ public class Ajustes extends AppCompatActivity {
         }
     }
 }
-
