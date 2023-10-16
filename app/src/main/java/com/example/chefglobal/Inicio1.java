@@ -45,7 +45,7 @@ public class Inicio1 extends AppCompatActivity {
                 switch (position){
                     case 0:
                         //Llamar al fragmento home
-                        Home h = new Home();
+                        HomeFragment h = new HomeFragment();
                         getSupportFragmentManager().beginTransaction().replace(R.id.contenedor,h).commit();
                         break;
                     case 1:
