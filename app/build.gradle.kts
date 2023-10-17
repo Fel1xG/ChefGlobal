@@ -49,6 +49,9 @@ dependencies {
     implementation("com.google.firebase:firebase-storage-ktx:20.2.1")
     implementation("com.google.firebase:firebase-firestore-ktx:24.8.1")
     implementation("com.firebaseui:firebase-ui-firestore:8.0.0")
+    implementation ("androidx.navigation:navigation-fragment:2.3.5")
+    implementation ("androidx.navigation:navigation-ui:2.3.5")
+
 
 
     testImplementation("junit:junit:4.13.2")

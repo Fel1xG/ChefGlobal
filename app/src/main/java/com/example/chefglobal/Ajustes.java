@@ -8,6 +8,7 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -34,46 +35,70 @@ public class Ajustes extends AppCompatActivity {
     private ImageView imfoto;
     private String currentUserUid;
     private FirebaseFirestore db;
-
+    private TextView tvNombreUsuario;
+    private TextView tvCorreoUsuario;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_ajustes); // Asegúrate de que tu layout tenga un ImageView con id ivFoto
+        setContentView(R.layout.activity_ajustes);
 
-        // Verifica si el usuario ha iniciado sesión y tiene una foto de perfil
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        if (currentUser != null) {
-            String currentUserUid = currentUser.getUid();
-
-            // Define la referencia a la foto de perfil en Firebase Storage
-            StorageReference fotoRef = FirebaseStorage.getInstance().getReference().child("images/" + "perfil_" + currentUserUid + ".jpg");
-
-            // Carga la foto de perfil en el ImageView
-            ImageView imfoto = findViewById(R.id.ivFoto);
-            Glide.with(this)
-                    .load(fotoRef)
-                    .into(imfoto);
-        }
-
+        // Inicializa Firebase Storage
         mStorage = FirebaseStorage.getInstance().getReference();
         imfoto = findViewById(R.id.ivFoto);
+        tvNombreUsuario = findViewById(R.id.tvNombreUsuario);
+        tvCorreoUsuario = findViewById(R.id.tvCorreoUsuario);
 
         // Inicializa Firebase Firestore
         db = FirebaseFirestore.getInstance();
 
-        // Inicializa Firebase Authentication
-        FirebaseAuth mAuth = FirebaseAuth.getInstance();
-        FirebaseUser currentUser1 = mAuth.getCurrentUser();
-        if (currentUser1 != null) {
-            currentUserUid = currentUser1.getUid();
+        // Obtener el usuario actual
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser != null) {
+            // Obtener el correo del usuario
+            String email = currentUser.getEmail();
+            tvCorreoUsuario.setText(email);
+
+            // Obtener las primeras 7 letras del correo como nombre de usuario
+            String username = email.substring(0, 7); // Puedes cambiar esto si deseas un nombre diferente
+            tvNombreUsuario.setText(username);
+
+            // Define la referencia a la foto de perfil en Firebase Storage
+            String currentUserUid = currentUser.getUid();
+            StorageReference fotoRef = mStorage.child("images/" + "perfil_" + currentUserUid + ".jpg");
+
+            // Carga la foto de perfil en el ImageView
+            Glide.with(this)
+                    .load(fotoRef)
+                    .into(imfoto);
         }
 
         // Carga la foto de perfil del usuario actual si está disponible
         cargarFotoDePerfil();
     }
 
+    // Resto del código para tomar una foto, seleccionar imagen de la galería, subir imagen a Firebase Storage y guardar URL en Firestore sigue igual.
 
+    // Carga la foto de perfil del usuario al iniciar sesión
+    private void cargarFotoDePerfil() {
+        if (currentUserUid != null) {
+            DocumentReference userRef = db.collection("usuarios").document(currentUserUid);
+            userRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                @Override
+                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                    if (documentSnapshot.exists()) {
+                        String imageURL = documentSnapshot.getString("fotoDePerfil");
+                        if (imageURL != null) {
+                            // Carga la imagen desde la URL en el ImageView
+                            Glide.with(Ajustes.this)
+                                    .load(imageURL)
+                                    .into(imfoto);
+                        }
+                    }
+                }
+            });
+        }
+    }
 
     public void tomar_foto(View v) {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -165,33 +190,11 @@ public class Ajustes extends AppCompatActivity {
                             }
                         })
                         .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
+                            public void onFailure(Exception e) {
                                 Toast.makeText(Ajustes.this, "Error al guardar la imagen en la base de datos.", Toast.LENGTH_SHORT).show();
                             }
                         });
             }
         });
-    }
-
-    // Carga la foto de perfil del usuario al iniciar sesión
-    private void cargarFotoDePerfil() {
-        if (currentUserUid != null) {
-            DocumentReference userRef = db.collection("usuarios").document(currentUserUid);
-            userRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                @Override
-                public void onSuccess(DocumentSnapshot documentSnapshot) {
-                    if (documentSnapshot.exists()) {
-                        String imageURL = documentSnapshot.getString("fotoDePerfil");
-                        if (imageURL != null) {
-                            // Carga la imagen desde la URL en el ImageView
-                            Glide.with(Ajustes.this)
-                                    .load(imageURL)
-                                    .into(imfoto);
-                        }
-                    }
-                }
-            });
-        }
     }
 }

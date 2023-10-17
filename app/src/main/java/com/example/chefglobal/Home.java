@@ -13,11 +13,21 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
-class HomeFragment extends Fragment {
+
+public class Home extends Fragment {
 
     private RecyclerView recyclerView;
     private FirebaseFirestore db;
     private FirestoreRecyclerAdapter<Publicacion, PublicacionViewHolder> adapter;
+
+    // Este método estático se puede utilizar para crear una nueva instancia del fragmento
+    public static Home newInstance() {
+        return new Home();
+    }
+
+    // Constructor vacío requerido por Fragment
+    public Home() {
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -36,7 +46,7 @@ class HomeFragment extends Fragment {
             @NonNull
             @Override
             public PublicacionViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_home, parent, false);
+                View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_publicacion, parent, false);
                 return new PublicacionViewHolder(itemView);
             }
 
@@ -67,6 +77,7 @@ class HomeFragment extends Fragment {
         adapter.stopListening();
     }
 }
+
 
 
 
