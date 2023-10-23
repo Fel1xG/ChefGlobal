@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Términos y Condiciones de Uso de ChefGlobal"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Última actualización: [Fecha]"
+                android:textSize="16sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Bienvenido a ChefGlobal, la plataforma líder para entusiastas de la gastronomía y amantes de la cocina. Los siguientes Términos y Condiciones de Uso rigen tu acceso y uso de la aplicación móvil ChefGlobal y los servicios relacionados."
+                android:textSize="16sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Al registrarte o utilizar la Aplicación, aceptas plenamente estos Términos y te comprometes a cumplir con ellos. Si no estás de acuerdo con estos Términos, te recomendamos que no utilices la Aplicación."
+                android:textSize="16sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="1. Uso de la Aplicación"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="1.1. Requisitos de Registro. Para utilizar la Aplicación, debes ser mayor de 13 años. Al registrarte, garantizas que tienes la edad mínima requerida y proporcionas información precisa y actualizada."
+                android:textSize="16sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="1.2. Uso Responsable. Te comprometes a utilizar la Aplicación de manera responsable y ética. No está permitido publicar contenido que sea ilegal, difamatorio, obsceno, ofensivo o que infrinja los derechos de propiedad intelectual de terceros."
+                android:textSize="16sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="2. Contenido de los Usuarios"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="2.1. Derechos de Propiedad. Los usuarios son los únicos responsables del contenido que publican en la Aplicación. Al publicar contenido, otorgan a ChefGlobal una licencia no exclusiva, transferible y sublicenciable para utilizar, modificar, reproducir, distribuir y mostrar dicho contenido en relación con la Aplicación y los servicios de ChefGlobal."
+                android:textSize="16sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="2.2. Contenido con Derechos de Autor. No se permite la publicación de contenido con derechos de autor sin el permiso adecuado. ChefGlobal se reserva el derecho de eliminar cualquier contenido que viole derechos de propiedad intelectual."
+                android:textSize="16sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="3. Privacidad"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="3.1. Política de Privacidad. Tu privacidad es importante para nosotros. Consulta nuestra Política de Privacidad para obtener información detallada sobre cómo recopilamos, utilizamos y protegemos tus datos personales."
+                android:textSize="16sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="4. Seguridad y Cumplimiento Legal"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="4.1. Seguridad de la Cuenta. Eres responsable de la seguridad de tu cuenta. No compartas tus credenciales de inicio de sesión y toma medidas para proteger tu información personal."
+                android:textSize="16sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="4.2. Cumplimiento Legal. Al utilizar la Aplicación, debes cumplir con todas las leyes y regulaciones aplicables. No está permitido utilizar la Aplicación para actividades ilegales."
+                android:textSize="16sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="5. Cambios en los Términos"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="5.1. Modificaciones. ChefGlobal se reserva el derecho de modificar estos Términos en cualquier momento. Se notificarán los cambios importantes a través de la Aplicación. El uso continuado de la Aplicación después de la modificación de los Términos constituirá la aceptación de los mismos."
+                android:textSize="16sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="6. Cierre de la Cuenta"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="6.1. Suspensión y Cierre. ChefGlobal se reserva el derecho de suspender o cerrar cuentas de usuarios que incumplan estos Términos o que participen en actividades inapropiadas."
+                android:textSize="16sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="7. Contacto"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Para cualquier pregunta, comentario o inquietud relacionada con estos Términos y Condiciones, no dudes en contactarnos a través de la dirección de correo electrónico [correo de contacto]."
+                android:textSize="16sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Gracias por ser parte de la comunidad ChefGlobal. ¡Esperamos que disfrutes compartiendo y descubriendo deliciosas recetas y experiencias culinarias!"
+                android:textSize="16sp" />
+
+        </LinearLayout>
+    </ScrollView>
+
+    <Button
+        android:id="@+id/btnBackToAyuda"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Volver a Ayuda"
+        android:layout_gravity="center"
+        android:layout_marginTop="16dp"/>
+</LinearLayout>
+

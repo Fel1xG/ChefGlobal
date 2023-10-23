@@ -5,22 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp"
-    tools:context=".AgregarFragment">
-
-    <Button
-        android:id="@+id/tomar_foto_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Tomar Foto"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="16dp" />
+    tools:context=".Agregar">
 
     <Button
         android:id="@+id/seleccionar_foto_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Seleccionar Foto"
-        android:layout_below="@id/tomar_foto_button"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="16dp" />
 

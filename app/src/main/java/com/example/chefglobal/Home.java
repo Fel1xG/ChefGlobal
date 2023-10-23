@@ -13,19 +13,16 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
-
 public class Home extends Fragment {
 
     private RecyclerView recyclerView;
     private FirebaseFirestore db;
     private FirestoreRecyclerAdapter<Publicacion, PublicacionViewHolder> adapter;
 
-    // Este método estático se puede utilizar para crear una nueva instancia del fragmento
     public static Home newInstance() {
         return new Home();
     }
 
-    // Constructor vacío requerido por Fragment
     public Home() {
     }
 
@@ -53,7 +50,6 @@ public class Home extends Fragment {
             @Override
             protected void onBindViewHolder(@NonNull PublicacionViewHolder holder, int position, @NonNull Publicacion model) {
                 // Configura cómo se muestra cada elemento en el RecyclerView
-                // Por ejemplo:
                 holder.setTextoPublicacion(model.getTexto());
                 holder.setImagenPublicacion(model.getImageUrl());
             }
@@ -77,8 +73,3 @@ public class Home extends Fragment {
         adapter.stopListening();
     }
 }
-
-
-
-
-

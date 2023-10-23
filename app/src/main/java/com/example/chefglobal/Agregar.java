@@ -136,6 +136,7 @@ public class Agregar extends Fragment {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             String userId = user.getUid();
+            String userName = user.getDisplayName(); // Obtén el nombre del usuario
 
             // Crear una instancia de Firebase Firestore
             FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -144,12 +145,7 @@ public class Agregar extends Fragment {
             DocumentReference nuevaPublicacion = db.collection("publicaciones").document();
 
             // Crear un objeto Publicacion con los datos
-            Publicacion publicacion;
-            if (imageUrl != null) {
-                publicacion = new Publicacion(userId, texto, imageUrl);
-            } else {
-                publicacion = new Publicacion(userId, texto, ""); // Establece una URL vacía o un valor predeterminado si no hay URL de imagen
-            }
+            Publicacion publicacion = new Publicacion(userId, userName, texto, imageUrl);
 
             // Guardar la publicación en Firestore
             nuevaPublicacion.set(publicacion);
