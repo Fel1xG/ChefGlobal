@@ -6,17 +6,25 @@ public class Publicacion {
     private String userName;
     private String texto;
     private String imageUrl;
+    private boolean guardadaPorUsuario;
 
-    // Constructor vacío requerido para Firestore
     public Publicacion() {
+        // Constructor vacío requerido para Firestore
     }
 
-    // Constructor con todos los campos excepto el ID
     public Publicacion(String userId, String userName, String texto, String imageUrl) {
         this.userId = userId;
         this.userName = userName;
         this.texto = texto;
         this.imageUrl = imageUrl;
+    }
+
+    public boolean esGuardadaPorUsuario() {
+        return guardadaPorUsuario;
+    }
+
+    public void setGuardadaPorUsuario(boolean guardadaPorUsuario) {
+        this.guardadaPorUsuario = guardadaPorUsuario;
     }
 
     public String getId() {
@@ -59,6 +67,7 @@ public class Publicacion {
         this.imageUrl = imageUrl;
     }
 }
+
 
 
 

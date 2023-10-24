@@ -106,7 +106,7 @@ public class PublicacionViewHolder extends RecyclerView.ViewHolder {
                                         Toast.makeText(context, "Error al guardar la publicación", Toast.LENGTH_SHORT).show();
                                     });
                         } else {
-                            Toast.makeText(context, "La publicación no existe", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, "No puedes guardar una publicación ya guardada", Toast.LENGTH_SHORT).show();
                         }
                     } else {
                         Toast.makeText(context, "Error al obtener la publicación", Toast.LENGTH_SHORT).show();

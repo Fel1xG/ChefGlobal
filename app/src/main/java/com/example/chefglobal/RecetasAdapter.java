@@ -3,6 +3,7 @@ package com.example.chefglobal;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -24,12 +25,14 @@ public class RecetasAdapter extends RecyclerView.Adapter<RecetasAdapter.RecetasV
         private ImageView imagenReceta;
         private TextView nombreReceta;
         private TextView descripcionReceta;
+        private Button botonGuardar; // Agrega un botón para guardar
 
         public RecetasViewHolder(@NonNull View itemView) {
             super(itemView);
             imagenReceta = itemView.findViewById(R.id.imagenPublicacion); // Ajusta el ID según tu diseño
             nombreReceta = itemView.findViewById(R.id.nombreUsuario); // Ajusta el ID según tu diseño
             descripcionReceta = itemView.findViewById(R.id.textoPublicacion); // Ajusta el ID según tu diseño
+            botonGuardar = itemView.findViewById(R.id.btnGuardarPublicacion); // Ajusta el ID según tu diseño
         }
 
         public void setImagenReceta(String imageUrl) {
@@ -51,6 +54,14 @@ public class RecetasAdapter extends RecyclerView.Adapter<RecetasAdapter.RecetasV
         public void setDescripcionReceta(String descripcion) {
             descripcionReceta.setText(descripcion);
         }
+
+        public void ocultarBotonGuardar() {
+            botonGuardar.setVisibility(View.GONE);
+        }
+
+        public void mostrarBotonGuardar() {
+            botonGuardar.setVisibility(View.VISIBLE);
+        }
     }
 
     @NonNull
@@ -62,17 +73,20 @@ public class RecetasAdapter extends RecyclerView.Adapter<RecetasAdapter.RecetasV
 
     @Override
     public void onBindViewHolder(@NonNull RecetasViewHolder holder, int position) {
-        Publicacion receta = recetas.get(position); // Ajusta el tipo de datos según tu implementación
-        holder.setNombreReceta(receta.getTexto()); // Ajusta el método para obtener el nombre de la receta
-        holder.setDescripcionReceta("Descripción de la receta aquí"); // Ajusta la descripción de la receta según tu implementación
-        holder.setImagenReceta(receta.getImageUrl()); // Ajusta el método para obtener la imagen de la receta
+        Publicacion receta = recetas.get(position);
+        holder.setNombreReceta(receta.getTexto());
+        holder.setDescripcionReceta("Descripción de la receta aquí"); // Personaliza la descripción
+        holder.setImagenReceta(receta.getImageUrl());
+
+        // Añade una lógica condicional para mostrar u ocultar el botón de guardar
+        if (receta.esGuardadaPorUsuario()) {
+            holder.ocultarBotonGuardar();
+        }
     }
+
 
     @Override
     public int getItemCount() {
         return recetas.size();
     }
 }
-
-
-

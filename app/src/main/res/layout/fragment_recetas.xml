@@ -23,4 +23,15 @@
         android:layout_height="match_parent"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
+    <TextView
+        android:id="@+id/textVacio"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="No hay recetas guardadas"
+        android:textColor="#000000"
+        android:textSize="16sp"
+        android:visibility="gone" />
+
 </LinearLayout>
+

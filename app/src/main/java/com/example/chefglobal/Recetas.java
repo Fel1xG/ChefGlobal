@@ -9,6 +9,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
@@ -65,6 +67,16 @@ public class Recetas extends Fragment {
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
+
+        // Obtén una referencia al TextView
+        TextView textVacio = view.findViewById(R.id.textVacio);
+
+        // Verifica si el RecyclerView no tiene elementos (no hay recetas guardadas)
+        if (adapter.getItemCount() == 0) {
+            textVacio.setVisibility(View.VISIBLE);
+        } else {
+            textVacio.setVisibility(View.GONE);
+        }
 
         return view;
     }
