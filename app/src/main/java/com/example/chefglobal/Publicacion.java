@@ -1,8 +1,9 @@
 package com.example.chefglobal;
 
 public class Publicacion {
+    private String id; // Identificador único
     private String userId;
-    private String userName; // Agrega el nombre del usuario
+    private String userName;
     private String texto;
     private String imageUrl;
 
@@ -10,11 +11,20 @@ public class Publicacion {
     public Publicacion() {
     }
 
+    // Constructor con todos los campos excepto el ID
     public Publicacion(String userId, String userName, String texto, String imageUrl) {
         this.userId = userId;
         this.userName = userName;
         this.texto = texto;
         this.imageUrl = imageUrl;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getUserId() {
@@ -26,11 +36,11 @@ public class Publicacion {
     }
 
     public String getUserName() {
-        return userName; // Método para obtener el nombre del usuario
+        return userName;
     }
 
     public void setUserName(String userName) {
-        this.userName = userName; // Método para establecer el nombre del usuario
+        this.userName = userName;
     }
 
     public String getTexto() {
@@ -48,10 +58,8 @@ public class Publicacion {
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }
-
-    public String getId() {
-        return userId; // O el campo que uses como ID de la publicación
-    }
 }
+
+
 
 

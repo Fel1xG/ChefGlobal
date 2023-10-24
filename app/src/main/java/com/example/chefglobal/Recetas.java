@@ -1,5 +1,6 @@
 package com.example.chefglobal;
 
+import android.content.Context;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -46,8 +47,11 @@ public class Recetas extends Fragment {
             @NonNull
             @Override
             public PublicacionViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_publicacion, parent, false);
-                return new PublicacionViewHolder(itemView);
+                // Aquí se crea el contexto desde el ViewGroup parent
+                Context context = parent.getContext();
+                View itemView = LayoutInflater.from(context).inflate(R.layout.item_publicacion, parent, false);
+                // Se pasa el contexto al constructor de PublicacionViewHolder
+                return new PublicacionViewHolder(itemView, context);
             }
 
             @Override
