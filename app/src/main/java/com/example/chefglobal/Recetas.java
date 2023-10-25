@@ -22,11 +22,14 @@ public class Recetas extends Fragment {
 
     private RecyclerView recyclerView;
     private FirebaseFirestore db;
-    private FirestoreRecyclerAdapter<Publicacion, PublicacionViewHolder> adapter;
+    private Context context;
+
+    private FirestoreRecyclerAdapter<Publicacion, RecetasAdapter.RecetasViewHolder> adapter;
 
     public Recetas() {
         // Constructor vacío requerido para Fragment
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -45,25 +48,10 @@ public class Recetas extends Fragment {
                 .setQuery(query, Publicacion.class)
                 .build();
 
-        adapter = new FirestoreRecyclerAdapter<Publicacion, PublicacionViewHolder>(options) {
-            @NonNull
-            @Override
-            public PublicacionViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                // Aquí se crea el contexto desde el ViewGroup parent
-                Context context = parent.getContext();
-                View itemView = LayoutInflater.from(context).inflate(R.layout.item_publicacion, parent, false);
-                // Se pasa el contexto al constructor de PublicacionViewHolder
-                return new PublicacionViewHolder(itemView, context);
-            }
+        // Modifica la creación del adaptador para pasar FirestoreRecyclerOptions
+        adapter = new RecetasAdapter(options, true, requireContext());// Pasa true para indicar que estás en el fragmento Recetas
 
-            @Override
-            protected void onBindViewHolder(@NonNull PublicacionViewHolder holder, int position, @NonNull Publicacion model) {
-                // Configura cómo se muestra cada elemento en el RecyclerView
-                holder.setTextoPublicacion(model.getTexto());
-                holder.setImagenPublicacion(model.getImageUrl());
-                holder.setNombreUsuario(model.getUserName());
-            }
-        };
+
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
@@ -92,4 +80,6 @@ public class Recetas extends Fragment {
         super.onStop();
         adapter.stopListening();
     }
+
 }
+

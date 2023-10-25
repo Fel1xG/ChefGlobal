@@ -1,48 +1,61 @@
 package com.example.chefglobal;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.graphics.Typeface;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.util.List;
+public class RecetasAdapter extends FirestoreRecyclerAdapter<Publicacion, RecetasAdapter.RecetasViewHolder> {
+    private boolean isRecetasFragment;
+    private Context context; // Agregar una variable de contexto
 
-public class RecetasAdapter extends RecyclerView.Adapter<RecetasAdapter.RecetasViewHolder> {
-    private List<Publicacion> recetas; // Cambia a la clase adecuada que contenga las recetas guardadas
-
-    public RecetasAdapter(List<Publicacion> recetas) {
-        this.recetas = recetas;
+    public RecetasAdapter(@NonNull FirestoreRecyclerOptions<Publicacion> options, boolean isRecetasFragment, Context context) {
+        super(options);
+        this.isRecetasFragment = isRecetasFragment;
+        this.context = context; // Asignar el contexto
     }
 
     public static class RecetasViewHolder extends RecyclerView.ViewHolder {
         private ImageView imagenReceta;
         private TextView nombreReceta;
         private TextView descripcionReceta;
-        private Button botonGuardar; // Agrega un botón para guardar
+        private Button botonGuardar;
+        private Button botonEliminar;
 
         public RecetasViewHolder(@NonNull View itemView) {
             super(itemView);
-            imagenReceta = itemView.findViewById(R.id.imagenPublicacion); // Ajusta el ID según tu diseño
-            nombreReceta = itemView.findViewById(R.id.nombreUsuario); // Ajusta el ID según tu diseño
-            descripcionReceta = itemView.findViewById(R.id.textoPublicacion); // Ajusta el ID según tu diseño
-            botonGuardar = itemView.findViewById(R.id.btnGuardarPublicacion); // Ajusta el ID según tu diseño
+            imagenReceta = itemView.findViewById(R.id.imagenPublicacion);
+            nombreReceta = itemView.findViewById(R.id.nombreUsuario);
+            descripcionReceta = itemView.findViewById(R.id.textoPublicacion);
+            botonGuardar = itemView.findViewById(R.id.btnGuardarPublicacion);
+            botonEliminar = itemView.findViewById(R.id.btnEliminarPublicacion);
         }
 
         public void setImagenReceta(String imageUrl) {
-            // Configura la imagen de la receta utilizando una biblioteca de carga de imágenes (Glide, Picasso, etc.)
             if (imageUrl != null && !imageUrl.isEmpty()) {
                 Glide.with(itemView.getContext())
                         .load(imageUrl)
                         .into(imagenReceta);
             } else {
-                // Si no hay URL de imagen, puedes ocultar la vista de la imagen o establecer una imagen predeterminada.
                 imagenReceta.setVisibility(View.GONE);
             }
         }
@@ -54,39 +67,98 @@ public class RecetasAdapter extends RecyclerView.Adapter<RecetasAdapter.RecetasV
         public void setDescripcionReceta(String descripcion) {
             descripcionReceta.setText(descripcion);
         }
-
-        public void ocultarBotonGuardar() {
-            botonGuardar.setVisibility(View.GONE);
-        }
-
-        public void mostrarBotonGuardar() {
-            botonGuardar.setVisibility(View.VISIBLE);
-        }
     }
 
     @NonNull
     @Override
     public RecetasViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_publicacion, parent, false); // Ajusta el diseño del elemento de receta (item_receta.xml) según tus necesidades
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_publicacion, parent, false);
         return new RecetasViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecetasViewHolder holder, int position) {
-        Publicacion receta = recetas.get(position);
+    protected void onBindViewHolder(@NonNull RecetasViewHolder holder, int position, @NonNull Publicacion receta) {
         holder.setNombreReceta(receta.getTexto());
-        holder.setDescripcionReceta("Descripción de la receta aquí"); // Personaliza la descripción
+
+        // Establece el estilo de texto normal para el TextView
+        holder.descripcionReceta.setTypeface(null, Typeface.NORMAL);
+
         holder.setImagenReceta(receta.getImageUrl());
 
-        // Añade una lógica condicional para mostrar u ocultar el botón de guardar
-        if (receta.esGuardadaPorUsuario()) {
-            holder.ocultarBotonGuardar();
+        if (isRecetasFragment) {
+            // Si estás en el fragmento Recetas, muestra el botón de eliminar
+            holder.botonEliminar.setVisibility(View.VISIBLE);
+            holder.botonGuardar.setVisibility(View.GONE);
+            holder.botonEliminar.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    eliminarPublicacion(receta.getId());
+                }
+            });
+        } else {
+            holder.botonEliminar.setVisibility(View.GONE);
+            holder.botonGuardar.setVisibility(View.VISIBLE);
         }
     }
 
-
-    @Override
-    public int getItemCount() {
-        return recetas.size();
+    private void eliminarPublicacion(String publicacionId) {
+        new AlertDialog.Builder(context)
+                .setTitle("Eliminar Receta")
+                .setMessage("¿Estás seguro de que quieres eliminar esta receta?")
+                .setPositiveButton("Sí", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Llama a la función para eliminar la publicación
+                        Log.d("PublicacionId", "ID de publicación: " + publicacionId);
+                        eliminarPublicacionDeMisRecetas(publicacionId);
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .show();
     }
+
+    // Agregar un método para eliminar la publicación de "Mis Recetas"
+    private void eliminarPublicacionDeMisRecetas(String publicacionId) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+
+        if (mAuth.getCurrentUser() != null) {
+            String userId = mAuth.getCurrentUser().getUid();
+
+            // Verifica que el usuario esté autenticado
+            if (publicacionId != null && !publicacionId.isEmpty()) {
+                db.collection("usuarios").document(userId).collection("recetasGuardadas")
+                        .document(publicacionId)
+                        .delete()
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                // Publicación eliminada con éxito
+                                Toast.makeText(context, "Receta eliminada con éxito", Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(Exception e) {
+                                // Error al eliminar la receta de "Mis Recetas"
+                                Toast.makeText(context, "Error al eliminar la receta de Mis Recetas", Toast.LENGTH_SHORT).show();
+                                e.printStackTrace(); // Registra la excepción
+                            }
+                        });
+            } else {
+                // Maneja el caso en el que publicacionId es nulo o vacío
+                Toast.makeText(context, "ID de publicación no válido", Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            // El usuario no está autenticado, muestra un mensaje de error o redirige a la autenticación.
+            Toast.makeText(context, "Usuario no autenticado", Toast.LENGTH_SHORT).show();
+        }
+    }
+
 }
+
+
+

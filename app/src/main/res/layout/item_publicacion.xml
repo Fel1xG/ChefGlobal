@@ -25,7 +25,7 @@
         android:textStyle="bold"
         android:textColor="#000000" />
 
-    <!-- Texto de la publicación -->
+    <!-- Texto de la publicación (sin negrita) -->
     <TextView
         android:id="@+id/textoPublicacion"
         android:layout_width="match_parent"
@@ -41,7 +41,17 @@
         android:text="Guardar Publicación"
         app:icon="@drawable/bookmark_solid" />
 
+    <!-- Botón de eliminar -->
+    <Button
+        android:id="@+id/btnEliminarPublicacion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Eliminar"
+        android:visibility="gone"
+        app:icon="@drawable/baseline_delete_24" />
+
 </LinearLayout>
+
 
 
 

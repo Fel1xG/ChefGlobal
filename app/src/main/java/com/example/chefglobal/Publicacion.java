@@ -19,6 +19,7 @@ public class Publicacion {
         this.imageUrl = imageUrl;
     }
 
+
     public boolean esGuardadaPorUsuario() {
         return guardadaPorUsuario;
     }

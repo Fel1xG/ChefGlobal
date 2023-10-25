@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -51,6 +50,7 @@ public class Home extends Fragment {
         FirestoreRecyclerOptions<Publicacion> options = new FirestoreRecyclerOptions.Builder<Publicacion>()
                 .setQuery(query, Publicacion.class)
                 .build();
+
 
         adapter = new FirestoreRecyclerAdapter<Publicacion, PublicacionViewHolder>(options) {
             @NonNull
@@ -98,8 +98,7 @@ public class Home extends Fragment {
         adapter.stopListening();
     }
 
-    // Código de Home
-    // Código de Home
+    // Método para guardar la publicación como receta
     private void guardarPublicacion(String publicacionId, Context context) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -147,5 +146,6 @@ public class Home extends Fragment {
                 });
     }
 }
+
 
 
