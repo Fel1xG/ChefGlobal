@@ -16,14 +16,6 @@
         android:textStyle="bold" />
 
     <TextView
-        android:id="@+id/textDescripcionReceta"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Ha publicado una receta nueva"
-        android:textSize="16sp"
-        android:textColor="#555" />
-
-    <TextView
         android:id="@+id/textMensaje"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

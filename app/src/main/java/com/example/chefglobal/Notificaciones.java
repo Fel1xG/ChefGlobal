@@ -1,78 +1,75 @@
 package com.example.chefglobal;
 
-import android.content.Intent;
-import android.nfc.Tag;
 import android.os.Bundle;
-import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-
-import androidx.annotation.NonNull;
+import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
+
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
-
 public class Notificaciones extends AppCompatActivity {
-    private static final String TAG = "NotificacionesActivity";
-    private RecyclerView recyclerView;
+
+    private FirebaseFirestore db;
+    private RecyclerView rvNotificaciones;
     private NotificacionesAdapter adapter;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notificaciones);
 
-        recyclerView = findViewById(R.id.rvNotificaciones);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new NotificacionesAdapter(new ArrayList<>()); // Inicializa el adaptador con una lista vacía
-        recyclerView.setAdapter(adapter);
+        rvNotificaciones = findViewById(R.id.rvNotificaciones);
+        rvNotificaciones.setLayoutManager(new LinearLayoutManager(this));
+        List<Notifi> notificacionesList = new ArrayList<>();
+        adapter = new NotificacionesAdapter(notificacionesList);
 
-        cargarNotificacionesDesdeFirebase();
+        // Recuperar el nombre de usuario enviado desde Inicio1
+        String nombreUsuario = getIntent().getStringExtra("nombreUsuario");
 
-        // Configura el botón para volver a la actividad Inicio1 (Home)
+        rvNotificaciones.setAdapter(adapter);
         Button btnVolverAInicio = findViewById(R.id.btnVolverAInicio);
         btnVolverAInicio.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Notificaciones.this, Inicio1.class);
-                startActivity(intent);
+                finish();
             }
         });
-    }
 
-    private void cargarNotificacionesDesdeFirebase() {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        // Cargar notificaciones de Firebase Firestore
+        db = FirebaseFirestore.getInstance();
         db.collection("notificaciones")
                 .orderBy("fecha", Query.Direction.DESCENDING)
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
                     public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
                         if (e != null) {
-                            // Manejar errores, por ejemplo, mostrando un mensaje de error
-                            // o registrando el error en la consola
-                            Log.w(TAG, "Error al obtener las notificaciones.", e);
+                            // Manejar errores
                             return;
                         }
 
                         List<Notifi> notificaciones = new ArrayList<>();
                         for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                            Notifi notificacion = document.toObject(Notifi.class);
+                            String nombreUsuario = document.getString("nombreUsuario");
+                            String mensaje = document.getString("mensaje");
+                            Date fecha = document.getDate("fecha");
+
+                            Notifi notificacion = new Notifi(nombreUsuario, fecha, mensaje);
                             notificaciones.add(notificacion);
                         }
-                        adapter.setNotificaciones(notificaciones);
+                        adapter.setNotificaciones(notificaciones, nombreUsuario); // Pasa el nombre de usuario
                     }
                 });
     }

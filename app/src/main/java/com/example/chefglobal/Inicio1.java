@@ -42,7 +42,7 @@ public class Inicio1 extends AppCompatActivity {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 int position = tab.getPosition();
-                switch (position){
+                switch (position) {
                     case 0:
                         Home h = new Home();
                         getSupportFragmentManager().beginTransaction().replace(R.id.contenedor, h).commit();
@@ -90,7 +90,11 @@ public class Inicio1 extends AppCompatActivity {
                     Recetas r = new Recetas();
                     getSupportFragmentManager().beginTransaction().replace(R.id.contenedor, r).commit();
                 } else if (id == R.id.notificacion) {
-                    startActivity(new Intent(Inicio1.this, Notificaciones.class));
+                    // Inicia la actividad Notificaciones y pasa el nombre de usuario
+                    String nombreUsuario = getUsernameFromEmail(mAuth.getCurrentUser().getEmail());
+                    Intent intent = new Intent(Inicio1.this, Notificaciones.class);
+                    intent.putExtra("nombreUsuario", nombreUsuario);
+                    startActivity(intent);
                 } else if (id == R.id.invitaAmigos) {
                     // Implementa lógica para compartir la app
                     // Puedes usar un Intent para compartir el enlace de descarga de la app

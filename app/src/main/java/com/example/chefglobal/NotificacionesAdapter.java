@@ -1,57 +1,36 @@
 package com.example.chefglobal;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import com.example.chefglobal.Notifi;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
-import java.text.SimpleDateFormat;
-
 
 public class NotificacionesAdapter extends RecyclerView.Adapter<NotificacionesAdapter.NotificacionViewHolder> {
+
     private List<Notifi> notificaciones;
+    private String nombreUsuario;
 
     public NotificacionesAdapter(List<Notifi> notificaciones) {
         this.notificaciones = notificaciones;
     }
 
-    public class NotificacionViewHolder extends RecyclerView.ViewHolder {
-        private TextView nombreUsuario;
-        private TextView mensaje;
-        private TextView fecha;
-
-        public NotificacionViewHolder(View view) {
-            super(view);
-            nombreUsuario = view.findViewById(R.id.tvNombreUsuario);
-            mensaje = view.findViewById(R.id.textMensaje);
-            fecha = view.findViewById(R.id.textFecha);
-        }
-    }
-
-    public void setNotificaciones(List<Notifi> notificaciones) {
-        this.notificaciones = notificaciones;
-        notifyDataSetChanged();
+    @NonNull
+    @Override
+    public NotificacionViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_notificacion, parent, false);
+        return new NotificacionViewHolder(view);
     }
 
     @Override
-    public NotificacionViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Context context = parent.getContext();
-        LayoutInflater inflater = LayoutInflater.from(context);
-        View notificacionView = inflater.inflate(R.layout.item_notificacion, parent, false);
-        return new NotificacionViewHolder(notificacionView);
-    }
-
-    @Override
-    public void onBindViewHolder(NotificacionViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull NotificacionViewHolder holder, int position) {
         Notifi notificacion = notificaciones.get(position);
-        holder.nombreUsuario.setText(notificacion.getNombreUsuario());
-        holder.mensaje.setText(notificacion.getMensaje());
+        holder.nombreUsuario.setText(nombreUsuario); // Usar el nombre de usuario
+        holder.mensaje.setText("Ha publicado una receta nueva");
         holder.fecha.setText(formatDate(notificacion.getFecha()));
     }
 
@@ -60,8 +39,27 @@ public class NotificacionesAdapter extends RecyclerView.Adapter<NotificacionesAd
         return notificaciones.size();
     }
 
-    private String formatDate(Date fecha) {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
-        return sdf.format(fecha);
+    public void setNotificaciones(List<Notifi> notificaciones, String nombreUsuario) {
+        this.notificaciones = notificaciones;
+        this.nombreUsuario = nombreUsuario;
+        notifyDataSetChanged();
+    }
+
+    public class NotificacionViewHolder extends RecyclerView.ViewHolder {
+        TextView nombreUsuario;
+        TextView mensaje;
+        TextView fecha;
+
+        public NotificacionViewHolder(View itemView) {
+            super(itemView);
+            nombreUsuario = itemView.findViewById(R.id.tvNombreUsuario);
+            mensaje = itemView.findViewById(R.id.textMensaje);
+            fecha = itemView.findViewById(R.id.textFecha);
+        }
+    }
+
+    private String formatDate(Date date) {
+        // Implementa el formato de fecha deseado
+        return date.toString();
     }
 }
