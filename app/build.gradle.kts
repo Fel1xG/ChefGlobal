@@ -53,6 +53,7 @@ dependencies {
     implementation ("androidx.navigation:navigation-ui:2.3.5")
     implementation("com.squareup.picasso:picasso:2.71828")
     implementation ("com.github.bumptech.glide:glide:4.12.0")
+    implementation("com.google.firebase:firebase-messaging:23.3.0")
 
 
 

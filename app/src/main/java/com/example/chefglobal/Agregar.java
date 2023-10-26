@@ -1,6 +1,5 @@
 package com.example.chefglobal;
 
-
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -20,7 +19,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.example.chefglobal.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -32,6 +30,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.UUID;
 
 public class Agregar extends Fragment {
@@ -72,9 +71,12 @@ public class Agregar extends Fragment {
 
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                 if (user != null) {
+                    String nombreUsuario = user.getDisplayName();
+
                     // Sube la imagen al Firebase Storage
                     if (imageUri != null) {
                         subirImagenAFirebaseStorage(texto);
+                        guardarNotificacion(texto); // Agrega la notificación
                     } else {
                         // No hay imagen seleccionada, muestra un mensaje de error
                         Toast.makeText(getActivity(), "Debes seleccionar una imagen", Toast.LENGTH_SHORT).show();
@@ -157,5 +159,37 @@ public class Agregar extends Fragment {
             imagenPreview.setImageResource(0);
         }
     }
-}
 
+    private void guardarNotificacion(String mensaje) {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            String nombreUsuario = user.getDisplayName();
+            Date fechaActual = new Date(); // Obtén la fecha actual
+
+            // Crear una instancia de Firebase Firestore
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+            // Crear una instancia de Notifi con el nombre de usuario y la fecha actual
+            Notifi notificacion = new Notifi(nombreUsuario, fechaActual);
+
+            // Agregar la notificación a la colección "
+            // notificaciones" en Firebase Firestore
+            db.collection("notificaciones")
+                    .add(notificacion)
+                    .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                        @Override
+                        public void onSuccess(DocumentReference documentReference) {
+                            // La notificación se ha guardado exitosamente en Firestore
+                            Log.d("MiApp", "Notificación guardada en Firestore con ID: " + documentReference.getId());
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            // Maneja los errores si la operación de guardado falla
+                            Log.e("MiApp", "Error al guardar notificación en Firestore: " + e.getMessage());
+                        }
+                    });
+        }
+    }
+}

@@ -1,7 +1,7 @@
 package com.example.chefglobal;
 
 public class Publicacion {
-    private String id; // Identificador único
+    private String id;
     private String userId;
     private String userName;
     private String texto;
@@ -17,15 +17,6 @@ public class Publicacion {
         this.userName = userName;
         this.texto = texto;
         this.imageUrl = imageUrl;
-    }
-
-
-    public boolean esGuardadaPorUsuario() {
-        return guardadaPorUsuario;
-    }
-
-    public void setGuardadaPorUsuario(boolean guardadaPorUsuario) {
-        this.guardadaPorUsuario = guardadaPorUsuario;
     }
 
     public String getId() {
@@ -67,9 +58,24 @@ public class Publicacion {
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }
+
+    public boolean isGuardadaPorUsuario() {
+        return guardadaPorUsuario;
+    }
+
+    public void setGuardadaPorUsuario(boolean guardadaPorUsuario) {
+        this.guardadaPorUsuario = guardadaPorUsuario;
+    }
+
+    @Override
+    public String toString() {
+        return "Publicacion{" +
+                "id='" + id + '\'' +
+                ", userId='" + userId + '\'' +
+                ", userName='" + userName + '\'' +
+                ", texto='" + texto + '\'' +
+                ", imageUrl='" + imageUrl + '\'' +
+                ", guardadaPorUsuario=" + guardadaPorUsuario +
+                '}';
+    }
 }
-
-
-
-
-

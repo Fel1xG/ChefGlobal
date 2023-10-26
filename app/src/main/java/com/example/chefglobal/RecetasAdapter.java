@@ -12,34 +12,34 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.bumptech.glide.Glide;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.example.chefglobal.Publicacion;
 
-public class RecetasAdapter extends FirestoreRecyclerAdapter<Publicacion, RecetasAdapter.RecetasViewHolder> {
-    private boolean isRecetasFragment;
-    private Context context; // Agregar una variable de contexto
+public class RecetasAdapter extends FirestoreRecyclerAdapter<Publicacion, com.example.chefglobal.RecetasAdapter.RecetasViewHolder> {
+    private final boolean isRecetasFragment;
+    private final Context context;
 
-    public RecetasAdapter(@NonNull FirestoreRecyclerOptions<Publicacion> options, boolean isRecetasFragment, Context context) {
+    public RecetasAdapter(FirestoreRecyclerOptions<Publicacion> options, boolean isRecetasFragment, Context context) {
         super(options);
         this.isRecetasFragment = isRecetasFragment;
-        this.context = context; // Asignar el contexto
+        this.context = context;
     }
 
-    public static class RecetasViewHolder extends RecyclerView.ViewHolder {
-        private ImageView imagenReceta;
-        private TextView nombreReceta;
-        private TextView descripcionReceta;
-        private Button botonGuardar;
-        private Button botonEliminar;
+
+    static class RecetasViewHolder extends RecyclerView.ViewHolder {
+        private final ImageView imagenReceta;
+        private final TextView nombreReceta;
+        private final TextView descripcionReceta;
+        private final Button botonGuardar;
+        private final Button botonEliminar;
 
         public RecetasViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -50,66 +50,59 @@ public class RecetasAdapter extends FirestoreRecyclerAdapter<Publicacion, Receta
             botonEliminar = itemView.findViewById(R.id.btnEliminarPublicacion);
         }
 
-        public void setImagenReceta(String imageUrl) {
-            if (imageUrl != null && !imageUrl.isEmpty()) {
+        public void bind(Publicacion receta) {
+            nombreReceta.setText(receta.getUserName());
+            descripcionReceta.setTypeface(null, Typeface.NORMAL);
+            if (receta.getImageUrl() != null && !receta.getImageUrl().isEmpty()) {
                 Glide.with(itemView.getContext())
-                        .load(imageUrl)
+                        .load(receta.getImageUrl())
                         .into(imagenReceta);
             } else {
                 imagenReceta.setVisibility(View.GONE);
             }
         }
 
-        public void setNombreReceta(String nombre) {
-            nombreReceta.setText(nombre);
-        }
-
-        public void setDescripcionReceta(String descripcion) {
-            descripcionReceta.setText(descripcion);
+        public void setBotonesVisibilidad(boolean mostrarGuardar, boolean mostrarEliminar) {
+            botonGuardar.setVisibility(mostrarGuardar ? View.VISIBLE : View.GONE);
+            botonEliminar.setVisibility(mostrarEliminar ? View.VISIBLE : View.GONE);
         }
     }
 
     @NonNull
     @Override
-    public RecetasViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public com.example.chefglobal.RecetasAdapter.RecetasViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_publicacion, parent, false);
-        return new RecetasViewHolder(view);
+        return new com.example.chefglobal.RecetasAdapter.RecetasViewHolder(view);
     }
 
     @Override
     protected void onBindViewHolder(@NonNull RecetasViewHolder holder, int position, @NonNull Publicacion receta) {
-        holder.setNombreReceta(receta.getTexto());
+        holder.bind(receta); // Esto establece la imagen y el nombre
+        holder.descripcionReceta.setText(receta.getTexto()); // Esto establece la descripción
+        holder.setBotonesVisibilidad(!isRecetasFragment, isRecetasFragment);
 
-        // Establece el estilo de texto normal para el TextView
-        holder.descripcionReceta.setTypeface(null, Typeface.NORMAL);
-
-        holder.setImagenReceta(receta.getImageUrl());
+        // Obtén el ID de la receta
+        String recetaId = getSnapshots().getSnapshot(position).getId();
 
         if (isRecetasFragment) {
-            // Si estás en el fragmento Recetas, muestra el botón de eliminar
-            holder.botonEliminar.setVisibility(View.VISIBLE);
-            holder.botonGuardar.setVisibility(View.GONE);
             holder.botonEliminar.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    eliminarPublicacion(receta.getId());
+                    eliminarReceta(recetaId);
                 }
             });
-        } else {
-            holder.botonEliminar.setVisibility(View.GONE);
-            holder.botonGuardar.setVisibility(View.VISIBLE);
         }
     }
 
-    private void eliminarPublicacion(String publicacionId) {
+
+    private void eliminarReceta(String recetaId) {
+        Log.d("MiApp", "ID de receta a eliminar (en eliminarReceta): " + recetaId); // Agrega esta línea para verificar el ID
         new AlertDialog.Builder(context)
                 .setTitle("Eliminar Receta")
                 .setMessage("¿Estás seguro de que quieres eliminar esta receta?")
                 .setPositiveButton("Sí", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        // Llama a la función para eliminar la publicación
-                        Log.d("PublicacionId", "ID de publicación: " + publicacionId);
-                        eliminarPublicacionDeMisRecetas(publicacionId);
+                        eliminarRecetaDeMisRecetas(recetaId);
                     }
                 })
                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -120,45 +113,26 @@ public class RecetasAdapter extends FirestoreRecyclerAdapter<Publicacion, Receta
                 .show();
     }
 
-    // Agregar un método para eliminar la publicación de "Mis Recetas"
-    private void eliminarPublicacionDeMisRecetas(String publicacionId) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
+    private void eliminarRecetaDeMisRecetas(String recetaId) {
+        Log.d("MiApp", "Eliminar receta con ID: " + recetaId);
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
         if (mAuth.getCurrentUser() != null) {
             String userId = mAuth.getCurrentUser().getUid();
-
-            // Verifica que el usuario esté autenticado
-            if (publicacionId != null && !publicacionId.isEmpty()) {
-                db.collection("usuarios").document(userId).collection("recetasGuardadas")
-                        .document(publicacionId)
-                        .delete()
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                // Publicación eliminada con éxito
-                                Toast.makeText(context, "Receta eliminada con éxito", Toast.LENGTH_SHORT).show();
-                            }
+            if (recetaId != null && !recetaId.isEmpty()) {
+                FirebaseFirestore db = FirebaseFirestore.getInstance();
+                DocumentReference recetaDocRef = db.collection("usuarios").document(userId)
+                        .collection("recetasGuardadas").document(recetaId);
+                recetaDocRef.delete()
+                        .addOnSuccessListener(aVoid -> {
+                            Toast.makeText(context, "Receta eliminada con éxito", Toast.LENGTH_SHORT).show();
                         })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(Exception e) {
-                                // Error al eliminar la receta de "Mis Recetas"
-                                Toast.makeText(context, "Error al eliminar la receta de Mis Recetas", Toast.LENGTH_SHORT).show();
-                                e.printStackTrace(); // Registra la excepción
-                            }
+                        .addOnFailureListener(e -> {
+                            Toast.makeText(context, "Error al eliminar la receta de Mis Recetas", Toast.LENGTH_SHORT).show();
                         });
-            } else {
-                // Maneja el caso en el que publicacionId es nulo o vacío
-                Toast.makeText(context, "ID de publicación no válido", Toast.LENGTH_SHORT).show();
             }
         } else {
-            // El usuario no está autenticado, muestra un mensaje de error o redirige a la autenticación.
             Toast.makeText(context, "Usuario no autenticado", Toast.LENGTH_SHORT).show();
         }
     }
-
 }
-
-
-

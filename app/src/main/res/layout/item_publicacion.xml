@@ -31,7 +31,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="8dp"
-        android:textSize="16sp" />
+        android:textSize="16sp"
+        android:ellipsize="end" />
+
 
     <!-- Botón de guardar -->
     <Button
