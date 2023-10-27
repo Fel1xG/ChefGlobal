@@ -5,7 +5,7 @@
     android:id="@+id/frameBuscar"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".Buscar">
 
     <androidx.appcompat.widget.SearchView
         android:id="@+id/searchView"
@@ -13,10 +13,10 @@
         android:layout_height="wrap_content"
         app:iconifiedByDefault="false"
         app:layout_constraintTop_toTopOf="parent"
-        app:queryHint="Buscar titulo" />
+        app:queryHint="Buscar recetas" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/RecyclerView"
+        android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -25,3 +25,6 @@
         app:layout_constraintTop_toBottomOf="@+id/searchView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
