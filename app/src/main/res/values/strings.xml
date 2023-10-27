@@ -1,8 +1,26 @@
 <resources>
     <string name="app_name">ChefGlobal</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="abrir_drawer">Drawer Abierto</string>
     <string name="cerrar_drawer">Drawer Cerrado</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- Array de países -->
+    <string-array name="lista_paises">
+        <item>Argentina</item>
+        <item>Bolivia</item>
+        <item>Chile</item>
+        <item>Colombia</item>
+        <item>Costa Rica</item>
+        <item>Cuba</item>
+        <item>Ecuador</item>
+        <item>El Salvador</item>
+        <item>España</item>
+        <item>Guatemala</item>
+        <item>Honduras</item>
+        <item>México</item>
+        <item>Nicaragua</item>
+        <item>Panamá</item>
+        <item>Perú</item>
+    </string-array>
+
 </resources>

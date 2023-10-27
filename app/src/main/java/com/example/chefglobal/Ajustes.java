@@ -6,8 +6,11 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.Nullable;
@@ -26,6 +29,8 @@ import com.bumptech.glide.Glide;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Ajustes extends AppCompatActivity {
     private static final int PICK_IMAGE_REQUEST = 1;
@@ -33,6 +38,7 @@ public class Ajustes extends AppCompatActivity {
     private TextView nombreUsuarioTextView;
     private TextView correoUsuarioTextView;
     private Button btnSeleccionarGaleria;
+    private Spinner spinnerPais;
     private FirebaseAuth mAuth;
     private StorageReference storageReference;
     private FirebaseFirestore db;
@@ -48,6 +54,7 @@ public class Ajustes extends AppCompatActivity {
         nombreUsuarioTextView = findViewById(R.id.tvNombreUsuario);
         correoUsuarioTextView = findViewById(R.id.tvCorreoUsuario);
         btnSeleccionarGaleria = findViewById(R.id.btnSeleccionarGaleria);
+        spinnerPais = findViewById(R.id.pais);
 
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
@@ -70,7 +77,77 @@ public class Ajustes extends AppCompatActivity {
 
             cargarFotoDePerfil();
         }
+
+        // Inicializar el Spinner con opciones de países
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.lista_paises, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerPais.setAdapter(adapter);
+
+        // Agregar un listener para guardar el país seleccionado
+        spinnerPais.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                String paisSeleccionado = parentView.getItemAtPosition(position).toString();
+
+                // Aquí puedes guardar el país seleccionado en Firebase Firestore
+                if (!paisSeleccionado.isEmpty()) {  // Asegúrate de que el país no esté vacío
+                    guardarPaisSeleccionadoEnFirestore(paisSeleccionado);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                // Maneja la falta de selección si es necesario.
+                Toast.makeText(Ajustes.this, "Por favor, selecciona un país", Toast.LENGTH_SHORT).show();
+            }
+
+            // Método para guardar el país seleccionado en Firebase Firestore
+            private void guardarPaisSeleccionadoEnFirestore(String pais) {
+                if (currentUserUid != null) {
+                    FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+                    DocumentReference userRef = firestore.collection("usuarios").document(currentUserUid);
+
+                    // Crear un objeto que represente los datos a guardar
+                    Map<String, Object> datosUsuario = new HashMap<>();
+                    datosUsuario.put("pais", pais);
+
+                    // Actualiza el documento del usuario con el país seleccionado
+                    userRef.update(datosUsuario)
+                            .addOnSuccessListener(aVoid -> {
+                                // Éxito al guardar el país seleccionado
+                                Toast.makeText(Ajustes.this, "País seleccionado: " + pais, Toast.LENGTH_SHORT).show();
+                            })
+                            .addOnFailureListener(e -> {
+                                // Manejar errores en la actualización
+                                Toast.makeText(Ajustes.this, "Error al guardar el país: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            });
+                }
+            }
+        });
+
+        // Agregar el código para abrir RecetasGuardadas y Notificaciones
+        TextView recetasGuardadasTextView = findViewById(R.id.recetasGuardadas);
+        recetasGuardadasTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Abre el fragmento de Recetas
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, new Recetas()) // Reemplaza RecetasFragment con el nombre correcto de tu fragmento de Recetas
+                        .commit();
+            }
+        });
+
+        TextView notificacionesTextView = findViewById(R.id.notificaciones2);
+        notificacionesTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Abre la actividad de Notificaciones
+                Intent intent = new Intent(Ajustes.this, Notificaciones.class);
+                startActivity(intent);
+            }
+        });
     }
+
 
     private String obtenerNombreDeUsuario(String correoElectronico) {
         int indexArroba = correoElectronico.indexOf("@");
@@ -168,4 +245,3 @@ public class Ajustes extends AppCompatActivity {
         }
     }
 }
-
