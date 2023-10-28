@@ -1,64 +1,111 @@
 package com.example.chefglobal;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ListView;
+import androidx.fragment.app.Fragment;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link Chat#newInstance} factory method to
- * create an instance of this fragment.
- */
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.DatabaseError;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 public class Chat extends Fragment {
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public Chat() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment Chat.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static Chat newInstance(String param1, String param2) {
-        Chat fragment = new Chat();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+    private List<ChatMessage> chatMessages;
+    private ChatAdapter chatAdapter;
+    private DatabaseReference databaseReference;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_chat, container, false);
+
+        ListView chatListView = view.findViewById(R.id.chatListView);
+        EditText messageEditText = view.findViewById(R.id.messageEditText);
+        Button sendButton = view.findViewById(R.id.sendButton);
+
+        chatMessages = new ArrayList<>();
+        chatAdapter = new ChatAdapter(getContext(), chatMessages);
+        chatListView.setAdapter(chatAdapter);
+
+        // Obtener el nombre de usuario del usuario actualmente autenticado
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser != null) {
+            String userName = currentUser.getDisplayName();
+            // Puedes establecer el nombre de usuario predeterminado si no se ha configurado
+            if (userName == null || userName.isEmpty()) {
+                userName = "Usuario Anónimo";
+            }
+
+            // Inicializar la referencia a la base de datos de Firebase
+            databaseReference = FirebaseDatabase.getInstance().getReference("messages");
+
+            // Actualizar el nombre de usuario en el nuevo mensaje
+            final String finalUserName = userName;  // Variable final para usar dentro del listener
+            sendButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String message = messageEditText.getText().toString();
+                    ChatMessage newMessage = new ChatMessage();
+                    newMessage.setUserName(finalUserName);
+                    newMessage.setMessage(message);
+                    newMessage.setTime(getCurrentTimeFormatted());
+
+                    // Guardar el mensaje en Firebase Realtime Database
+                    databaseReference.push().setValue(newMessage);
+
+                    messageEditText.setText("");
+                }
+            });
+
+            // Escuchar cambios en la base de datos y actualizar la interfaz de usuario
+            databaseReference.addChildEventListener(new ChildEventListener() {
+                @Override
+                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                    ChatMessage message = dataSnapshot.getValue(ChatMessage.class);
+                    chatMessages.add(message);
+                    chatAdapter.notifyDataSetChanged();
+                }
+
+                @Override
+                public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                }
+
+                @Override
+                public void onChildRemoved(DataSnapshot dataSnapshot) {
+                }
+
+                @Override
+                public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                }
+            });
         }
+
+        return view;
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_chat, container, false);
+    private String getCurrentTimeFormatted() {
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+        return sdf.format(new Date());
     }
 }
+
+
+
+
+
