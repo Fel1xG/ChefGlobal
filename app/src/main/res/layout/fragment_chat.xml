@@ -5,6 +5,16 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Chat General"
+        android:background="?attr/colorPrimary"
+        android:textColor="#ffffff"
+        android:padding="8dp"
+        android:textSize="18sp"
+        android:gravity="center"/>
+
     <ListView
         android:id="@+id/chatListView"
         android:layout_width="match_parent"

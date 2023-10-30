@@ -60,7 +60,7 @@ public class Chat extends Fragment {
                     ChatMessage newMessage = new ChatMessage();
                     newMessage.setUserName(finalUserName);
                     newMessage.setMessage(message);
-                    newMessage.setTime(getCurrentTimeFormatted());
+                    newMessage.setTime(getCurrentDateTimeFormatted());
 
                     // Guardar el mensaje en Firebase Realtime Database
                     databaseReference.push().setValue(newMessage);
@@ -99,13 +99,9 @@ public class Chat extends Fragment {
         return view;
     }
 
-    private String getCurrentTimeFormatted() {
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+    private String getCurrentDateTimeFormatted() {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
         return sdf.format(new Date());
     }
 }
-
-
-
-
 
